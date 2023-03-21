@@ -88,7 +88,7 @@ def main(display, window_size, snake_size, head_color, background_color, head_po
                     action = [0, 0, 0, 1]
 
                 history = [(state, action)] + history
-                
+
                 new_head = check_bound(new_head, window_size, snake_size)
                 snake = update_snake(new_head, snake)
 
@@ -102,7 +102,7 @@ def main(display, window_size, snake_size, head_color, background_color, head_po
             food_position = new_food(snake, window_size, snake_size)
             if not food_position:
                 print("You win!!!!")
-                break 
+                break
 
 
         display.fill(background_color)
@@ -111,11 +111,11 @@ def main(display, window_size, snake_size, head_color, background_color, head_po
             pygame.draw.rect(display, body_color, (x[0], x[1], snake_size - 2, snake_size - 2))
 
         pygame.draw.rect(display, head_color, (snake[0][0], snake[0][1], snake_size - 2, snake_size - 2))
-        
+
         pygame.draw.rect(display, food_color, (food_position[0], food_position[1], snake_size - 2, snake_size - 2))
 
         pygame.display.flip()
-    
+
     return history
 
 
@@ -124,6 +124,7 @@ def main(display, window_size, snake_size, head_color, background_color, head_po
 
 
 print("Score: ", score)
+print("YEEES")
 
 game = main(display, window_size, snake_size, head_color, background_color, head_position, food_position, snake, score)
 pygame.quit()
