@@ -6,31 +6,29 @@ from body import Body
 from food import Food
 from snake import Snake
 
-pygame.init()
 
-window_size = (300, 300)
-snake_size  = 50
-head_color = (0, 0, 255)
-body_color = (0, 255, 0)
-food_color = (255, 0, 0)
+
+WINDOW_SIZE      = (300, 300)
+SIZE             = 50
+
+class Game():
+    def __init__(self):
+        self.score       = 0
+        self.window_size = WINDOW_SIZE
+        self.size        = SIZE
+        self.display     = pygame.display.set_mode(WINDOW_SIZE)
+        self.snake       = Snake(Head(WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2))
 
 score = 0
 
-head_position = (window_size[0] // 2, window_size[1] // 2)
+display = pygame.display.set_mode(WINDOW_SIZE)
 
-head = Head(head_position[0], head_position[1])
+_snake = Snake(Head(WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2))
 
-display = pygame.display.set_mode(window_size)
-
-
-snake = [head_position]
-
-_snake = Snake(head)
-
-def new_food(_snake, window_size, snake_size):
+def new_food(_snake, WINDOW_SIZE, SIZE):
     game_space = []
-    for x in range(0, window_size[0], snake_size):
-        for y in range(0, window_size[1], snake_size):
+    for x in range(0, WINDOW_SIZE[0], SIZE):
+        for y in range(0, WINDOW_SIZE[1], SIZE):
             game_space.append((x,y))
     free_space = [l for l in game_space if l not in ([(_snake.head.x, _snake.head.y)] + [(k.x, k.y) for k in _snake.body])]
     (food.x,food.y) = random.choice(free_space)
@@ -38,26 +36,12 @@ def new_food(_snake, window_size, snake_size):
 
 
 food = Food(0, 0)
-new_food(_snake, window_size, snake_size)
+new_food(_snake, WINDOW_SIZE, SIZE)
 
-def check_bound(head, window_size, size):
-    if head.x == -size:
-        head.x += window_size[0]
-    elif head.x == window_size[0]:
-        head.x = 0
-    elif head.y == -size:
-        head.y += window_size[1]
-    elif head.y == window_size[1]:
-        head.y = 0
-    else:
-        pass
-    print(head.x, head.y)
-
-
-def game_state(window_size, snake_size, _snake, food):
+def game_state(WINDOW_SIZE, SIZE, _snake, food):
     state = []
-    for x in range(0, window_size[0], snake_size):
-        for y in range(0, window_size[1], snake_size):
+    for x in range(0, WINDOW_SIZE[0], SIZE):
+        for y in range(0, WINDOW_SIZE[1], SIZE):
             if (x,y) == (_snake.head.x, _snake.head.y):
                 state.append(0.50)
             elif (x,y) in [(k.x, k.y) for k in _snake.body]:
@@ -68,11 +52,11 @@ def game_state(window_size, snake_size, _snake, food):
                 state.append(1.00)
     return state
 
-def main(display, window_size, snake_size, head_color, head_position, food, snake, score, head, _snake):
+def main(display, WINDOW_SIZE, SIZE, food, score, _snake):
     running = True
     history = []
     while running:
-        state = game_state(window_size, snake_size, _snake, food)
+        state = game_state(WINDOW_SIZE, SIZE, _snake, food)
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 return history
@@ -80,61 +64,61 @@ def main(display, window_size, snake_size, head_color, head_position, food, snak
             if event.type == pygame.KEYDOWN:
 
                 if event.key == pygame.K_UP:
-                    if head.dir == 'UP':
+                    if _snake.head.dir == 'UP':
                         action = [1, 0, 0]
-                    elif head.dir == 'RIGHT':
+                    elif _snake.head.dir == 'RIGHT':
                         action = [0, 1, 0]
-                    elif head.dir == 'LEFT':
+                    elif _snake.head.dir == 'LEFT':
                         action = [0, 0, 1]
                     else:
                         return history
 
                 if event.key == pygame.K_DOWN:
-                    if head.dir == 'DOWN':
+                    if _snake.head.dir == 'DOWN':
                         action = [1, 0, 0]
-                    elif head.dir == 'LEFT':
+                    elif _snake.head.dir == 'LEFT':
                         action = [0, 1, 0]
-                    elif head.dir == 'RIGHT':
+                    elif _snake.head.dir == 'RIGHT':
                         action = [0, 0, 1]
                     else:
                         return history
 
                 if event.key == pygame.K_LEFT:
-                    if head.dir == 'LEFT':
+                    if _snake.head.dir == 'LEFT':
                         action = [1, 0, 0]
-                    elif head.dir == 'UP':
+                    elif _snake.head.dir == 'UP':
                         action = [0, 1, 0]
-                    elif head.dir == 'DOWN':
+                    elif _snake.head.dir == 'DOWN':
                         action = [0, 0, 1]
                     else:
                         return history
 
                 if event.key == pygame.K_RIGHT:
-                    if head.dir == 'RIGHT':
+                    if _snake.head.dir == 'RIGHT':
                         action = [1, 0, 0]
-                    elif head.dir == 'DOWN':
+                    elif _snake.head.dir == 'DOWN':
                         action = [0, 1, 0]
-                    elif head.dir == 'UP':
+                    elif _snake.head.dir == 'UP':
                         action = [0, 0, 1]
                     else:
                         return history
 
                 history = [(state, action)] + history
-
-                check_bound(head, window_size, snake_size)
-                _snake._update(action, food)
-                print(_snake.head.contains_food)
-
+                _snake._update(action, food, WINDOW_SIZE, SIZE)
+                
+                if _snake._tail_collision():
+                    return history
 
                 if _snake.head.contains_food:
                     score += 1
-                    new_food(_snake, window_size, snake_size)
+                    print("Score: ", score)
+                    new_food(_snake, WINDOW_SIZE, SIZE)
 
 
         empty_space = []
-        for row in range(0, window_size[1], snake_size):
+        for row in range(0, WINDOW_SIZE[1], SIZE):
             r = []
-            for col in range(0, window_size[0], snake_size):
+            for col in range(0, WINDOW_SIZE[0], SIZE):
                 r.append(Block(row, col))
             empty_space.append(r)
 
@@ -158,7 +142,7 @@ def main(display, window_size, snake_size, head_color, head_position, food, snak
 
 print("Score: ", score)
 
-game = main(display, window_size, snake_size, head_color, head_position, food, snake, score, head, _snake)
+game = main(display, WINDOW_SIZE, SIZE, food, score, _snake)
 pygame.quit()
 
 print(game)

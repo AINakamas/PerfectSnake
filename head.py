@@ -10,7 +10,20 @@ class Head(Block):
         self.contains_food = False
 
 
-    def _update(self, action, food):
+    def _check_bound(self, window_size, size):
+        if self.x == -size:
+            self.x += window_size[0]
+        elif self.x == window_size[0]:
+            self.x = 0
+        elif self.y == -size:
+            self.y += window_size[1]
+        elif self.y == window_size[1]:
+            self.y = 0
+        else:
+            pass
+
+
+    def _update(self, action, food, window_size, size):
         def update():
             if self.dir == 'UP':
                 self.y -= self.size
@@ -50,6 +63,7 @@ class Head(Block):
         elif action == [0, 0, 1]:
             right()
             update()
+        self._check_bound(window_size, size)
 
         if (self.x, self.y) == (food.x, food.y):
             self.contains_food = True

@@ -5,21 +5,19 @@ from body import Body
 class Snake():
     def __init__(self, head):
         self.head = head
-        self.body = []
+        self.body = [Body(head.x, head.y + 50)]
 
 
-    def _update(self, action, food):
-        if len(self.body) == 0:
-            if self.head.contains_food:
-                self.body.append(Body(self.head.x, self.head.y))
-            else:
-                self.head._update(action, food)
-        elif len(self.body) == 1:
-            a = self.head._copy
-            self.head._update(action, food)
-            a.contains_food
-
-
+    def _update(self, action, food, window_size, size):
+        if self.body[-1].contains_food:
+            self.body.append(Body(self.body[-1].x, self.body[-1].y))
+            self.body[-2].contains_food = False
+        a = self.head._copy()
+        self.head._update(action, food, window_size, size)
+        for i in range(len(self.body)):
+            b = self.body[i]._copy()
+            self.body[i]._update(a)
+            a = b._copy()
 
 
     def _tail_collision(self):
