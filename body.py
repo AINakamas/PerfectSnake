@@ -10,12 +10,12 @@ class Body(Block):
         self.contains_food = False
 
 
-    def _draw(self, display):
+    def _draw(self, display, radius):
         if not self.contains_food:
             super()._draw(display)
         else:
             super()._draw(display)
-            circle(display, (255, 0, 0), (self.x + 25, self.y + 25), 20)
+            circle(display, (255, 0, 0), (self.x + 25, self.y + 25), radius)
 
 
     def _copy(self):

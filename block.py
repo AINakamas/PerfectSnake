@@ -34,4 +34,8 @@ class Block:
         self.rep, self.color = rep_col(block_type)
 
     def _draw(self, display):
-        rect(display, self.color, (self.x, self.y, self.size, self.size))
+        if self.color == BACKGROUND_COLOR or self.color == FOOD_COLOR:
+            rect(display, self.color, (self.x, self.y, self.size, self.size))
+        else:
+            rect(display, self.color, (self.x+1, self.y+1, self.size-2, self.size-2))
+        

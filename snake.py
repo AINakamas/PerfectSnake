@@ -26,5 +26,6 @@ class Snake():
 
     def _draw(self, display):
         self.head._draw(display)
-        for body_part in self.body:
-            body_part._draw(display)
+        l = len(self.body)
+        for i in range(l):
+            self.body[i]._draw(display, 20 - i*(15 / l))
