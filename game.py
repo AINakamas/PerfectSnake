@@ -8,7 +8,7 @@ from snake import Snake
 
 
 
-WINDOW_SIZE      = (200, 200)
+WINDOW_SIZE      = (500, 500)
 SIZE             = 50
 
 class Game():
